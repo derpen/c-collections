@@ -1,8 +1,8 @@
 #include "sdl_utils.h"
 
-extern SDL_Window* gWindow = NULL;
-extern SDL_Surface* gScreenSurface = NULL;
-extern SDL_Surface* gImage = NULL;
+SDL_Window* gWindow = NULL;
+SDL_Surface* gScreenSurface = NULL;
+SDL_Surface* gImage = NULL;
 
 int util_SDLInit() {
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
