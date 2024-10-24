@@ -1,4 +1,4 @@
 #include "config.h"
 
-int SCREEN_WIDTH = 640;
-int SCREEN_HEIGHT = 480;
+int SCREEN_WIDTH = 800;
+int SCREEN_HEIGHT = 600;

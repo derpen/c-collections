@@ -17,20 +17,28 @@ Me, current author of this github repo, have modified it a little
 
 int main(int argc, char* args[]) {
 
-	if (util_SDLInit() < 0) {
+	if (SDLUtilInit() < 0) {
 		printf("Failed to initialize \n");
 		return -1;
 	}
 
-	if (util_SDLLoadFont("res/fonts/Roboto-Regular.ttf") < 0) {
-		printf("Failed to load font \n");
-		return -1;
-	}
+	//Create Texture
+	SDLTexture currentTexture = SDLTextureInit();
 
-	//if (util_SDLLoadTexture("res/osaka2.jpeg") < 0) {
-	//	printf("Failed to load texture \n");
+	//if (SDLUtilLoadFont("res/fonts/Roboto-Regular.ttf", &currentTexture) < 0) {
+	//	printf("Failed to load font \n");
 	//	return -1;
 	//}
+
+	//if (SDLUtilShowText("Timer Application", &currentTexture) < 0) {
+	//	printf("Failed to show text \n");
+	//	return -1;
+	//}
+
+	if (SDLTextureLoad("res/osaka2.jpeg", &currentTexture) < 0) {
+		printf("Failed to load texture \n");
+		return -1;
+	}
 
 	SDL_Event e; 
 	int quit = 0;
@@ -43,12 +51,12 @@ int main(int argc, char* args[]) {
 		SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 		SDL_RenderClear(gRenderer);
 
-		util_SDLRender();
+		SDLTextureRender(&currentTexture);
 
 		SDL_RenderPresent(gRenderer);
 	}
 
-	util_SDLClose();
+	SDLUtilClose(&currentTexture);
 
 	return 0;
 }
