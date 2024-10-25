@@ -2,7 +2,6 @@
 
 SDL_Window* gWindow = NULL;
 SDL_Renderer* gRenderer = NULL;
-TTF_Font* gFont = NULL;
 
 int SDLUtilInit(){
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -45,48 +44,7 @@ int SDLUtilInit(){
 	return 0;
 }
 
-int SDLUtilLoadFont(char* filename, SDLTexture* s){
-	SDLTextureFree(s);
-
-	gFont = TTF_OpenFont(filename, 28);
-	if (gFont == NULL) {
-		printf("Failed to load Font! TTF_Error: %s \n", TTF_GetError());
-		return -1;
-	}
-	
-	return 0;
-}
-
-int SDLUtilShowText(char* text, SDLTexture* s){
-	SDL_Color textColor = { 0, 0, 0 };
-	SDL_Surface* textSurface = TTF_RenderText_Solid(gFont, text, textColor);
-	if (textSurface == NULL) {
-		printf("Unable to render Text! TTF_Error: %s \n", TTF_GetError());
-		return -1;
-	}
-
-	s->Texture = SDL_CreateTextureFromSurface(gRenderer, textSurface);
-	if (s->Texture == NULL) {
-		printf("Unable to create texture from rendered text! SDL_Error: %s \n", SDL_GetError());
-		return -1;
-	}
-
-	s->w = textSurface->w;
-	s->h = textSurface->h;
-
-	SDL_FreeSurface(textSurface);
-
-	return 0;
-}
-
-void SDLUtilClose(SDLTexture* s){
-	//Free loaded images
-	SDLTextureFree(s);
-
-	//Free global font
-	TTF_CloseFont( gFont );
-	gFont = NULL;
-
+void SDLUtilClose(){
 	//Destroy window	
 	SDL_DestroyRenderer( gRenderer );
 	SDL_DestroyWindow( gWindow );

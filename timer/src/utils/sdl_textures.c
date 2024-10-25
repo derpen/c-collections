@@ -39,6 +39,7 @@ int SDLTextureLoad(char* filename, SDLTexture* s) {
 	return 0;
 }
 
+// This one for custom parameters
 void _SDLTextureRender(SDLTexture* s, SDL_Rect* clip, SDL_Rect* renderQuad, double angle, SDL_Point* center, SDL_RendererFlip flip) {
 	int x = (SCREEN_WIDTH - s->w) / 2;
 	int y = (SCREEN_HEIGHT - s->h) / 2;

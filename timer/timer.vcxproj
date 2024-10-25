@@ -23,6 +23,7 @@
     <ClCompile Include="src\timer.c" />
     <ClCompile Include="src\utils\sdl_button.c" />
     <ClCompile Include="src\utils\sdl_fonts.c" />
+    <ClCompile Include="src\utils\sdl_input.c" />
     <ClCompile Include="src\utils\sdl_textures.c" />
     <ClCompile Include="src\utils\sdl_utils.c" />
   </ItemGroup>
@@ -30,6 +31,7 @@
     <ClInclude Include="src\config.h" />
     <ClInclude Include="src\utils\sdl_button.h" />
     <ClInclude Include="src\utils\sdl_fonts.h" />
+    <ClInclude Include="src\utils\sdl_input.h" />
     <ClInclude Include="src\utils\sdl_textures.h" />
     <ClInclude Include="src\utils\sdl_utils.h" />
   </ItemGroup>

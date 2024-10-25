@@ -7,6 +7,7 @@ SDLButton SDLButtonInit(int posX, int posY, SDLTexture* s) {
 	newButton.rect = (SDL_Rect){ posX, posY, s->w, s->h};
 	newButton.angle = 0.0;
 	newButton.position = (SDL_Point){ posX, posY };
+
 	newButton.flip = SDL_FLIP_NONE;
 
 	return newButton;
@@ -38,6 +39,7 @@ void SDLButtonHandleEvent(SDLButton* b, SDL_Event* e) {
 	}
 }
 
-void SDLButtonRender(SDLButton* b ,SDLTexture* s) {
-	_SDLTextureRender(s, &b->rect, &b->rect, b->angle, &b->position, b->flip);
+void SDLButtonRender(SDLButton* b) {
+	SDL_Rect* noClip = NULL;
+	_SDLTextureRender(b->texture, noClip, &b->rect, b->angle, &b->position, b->flip);
 }
