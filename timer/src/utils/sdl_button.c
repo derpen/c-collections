@@ -13,13 +13,12 @@ SDLButton SDLButtonInit(int posX, int posY, SDLTexture* s) {
 	return newButton;
 }
 
-void SDLButtonHandleEvent(SDLButton* b, SDL_Event* e) {
+int SDLButtonHandleEvent(SDLButton* b, SDL_Event* e) {
 	if (e->type == SDL_MOUSEBUTTONDOWN) {
 		int mouseX, mouseY;
 		SDL_GetMouseState(&mouseX, &mouseY);
 
-		// TODO: this thing
-		int inside = 1;
+		short inside = 1;
 		if (mouseX < b->position.x) {
 			inside = 0;
 		}
@@ -33,10 +32,10 @@ void SDLButtonHandleEvent(SDLButton* b, SDL_Event* e) {
 			inside = 0;
 		}
 
-		if (inside) {
-			printf("Click event happened :D \n");
-		}
+		return inside;
 	}
+
+	return -1;
 }
 
 void SDLButtonRender(SDLButton* b) {

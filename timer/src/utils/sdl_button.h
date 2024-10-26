@@ -14,5 +14,5 @@ typedef struct {
 } SDLButton;
 
 SDLButton SDLButtonInit(int posX, int posY, SDLTexture* s);
-void SDLButtonHandleEvent(SDLButton* b, SDL_Event* e);
+int SDLButtonHandleEvent(SDLButton* b, SDL_Event* e);
 void SDLButtonRender(SDLButton* b);
