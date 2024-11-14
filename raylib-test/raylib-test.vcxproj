@@ -133,10 +133,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="main.c" />
+    <ClCompile Include="src\layout.c" />
+    <ClCompile Include="src\main.c" />
     <ClCompile Include="src\timer.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\layout.h" />
     <ClInclude Include="src\timer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

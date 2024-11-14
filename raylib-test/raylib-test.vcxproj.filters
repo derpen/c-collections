@@ -15,15 +15,21 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.c">
+    <ClCompile Include="src\timer.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\timer.c">
+    <ClCompile Include="src\layout.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\timer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\layout.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
