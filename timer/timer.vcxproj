@@ -19,21 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\config.c" />
     <ClCompile Include="src\timer.c" />
-    <ClCompile Include="src\utils\sdl_button.c" />
-    <ClCompile Include="src\utils\sdl_fonts.c" />
-    <ClCompile Include="src\utils\sdl_input.c" />
-    <ClCompile Include="src\utils\sdl_textures.c" />
-    <ClCompile Include="src\utils\sdl_utils.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\config.h" />
-    <ClInclude Include="src\utils\sdl_button.h" />
-    <ClInclude Include="src\utils\sdl_fonts.h" />
-    <ClInclude Include="src\utils\sdl_input.h" />
-    <ClInclude Include="src\utils\sdl_textures.h" />
-    <ClInclude Include="src\utils\sdl_utils.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -88,8 +74,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>D:\WindowsInclude\sdl2_image\include;D:\WindowsInclude\sdl2_ttf\include;D:\WindowsInclude\sdl\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\WindowsInclude\sdl2_image\lib\x64;D:\WindowsInclude\sdl2_ttf\lib\x64;D:\WindowsInclude\sdl\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -129,7 +115,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_ttf.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
