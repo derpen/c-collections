@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "raylib/raylib.h"
 
 #define WINDOW_HEIGHT 600
@@ -6,7 +7,7 @@
 
 typedef struct {
 	bool mouseClicked;
-	char* current_value[3];
+	char current_value[3];
 	int current_digit_amount;
 	Rectangle box;
 } TIMER_BUTTONS;
@@ -20,7 +21,7 @@ TIMER_BUTTONS allButtons[3];
 
 //void start_countdown();
 void check_collision(TIMER_BUTTONS* buttons);
-void receive_input(TIMER_BUTTONS* buttons);
+void receive_input(TIMER_BUTTONS* buttons, bool limit);
 void draw_scene(TIMER_BUTTONS buttons);
 
 int main() {
@@ -55,7 +56,12 @@ int main() {
 		// 2 is the size of allButtons
 		for (int i = 0; i <= 2; i++) {
 			check_collision(&allButtons[i]);
-			receive_input(&allButtons[i]);
+			if (i == 0) {
+				receive_input(&allButtons[i], false);
+			}
+			else {
+				receive_input(&allButtons[i], true);
+			}
 		}
 
 		// Drawing part
@@ -68,7 +74,6 @@ int main() {
 
 		EndDrawing();
 	}
-
 
 	CloseWindow();
 
@@ -87,9 +92,8 @@ void check_collision(TIMER_BUTTONS* buttons) {
 	}
 }
 
-void receive_input(TIMER_BUTTONS* buttons) {
+void receive_input(TIMER_BUTTONS* buttons, bool limit) {
 	if (buttons->mouseClicked) {
-
 		SetMouseCursor(MOUSE_CURSOR_IBEAM);
 
 		int key = GetCharPressed();
@@ -97,9 +101,21 @@ void receive_input(TIMER_BUTTONS* buttons) {
 		while (key > 0) {
 			// 0-9 is keycode 48-57
 			if ((key >= 48) && (key <= 57) && (buttons->current_digit_amount < 2)) {
+				// TODO: add 0 in the front if theres only one digit
+				// Might be a bit too hard actually
 				buttons->current_value[buttons->current_digit_amount] = (char)key;
 				buttons->current_value[buttons->current_digit_amount + 1] = '\0';
 				buttons->current_digit_amount++;
+
+				if (limit) {
+					// limit minute and second to 59
+					int currentValue = atoi(buttons->current_value);
+					if (currentValue >= 60) {
+						buttons->current_value[0] = '5';
+						buttons->current_value[1] = '9';
+						buttons->current_value[2] = '\0';
+					}
+				}
 			}
 
 			key = GetCharPressed(); // Check next character in queue
