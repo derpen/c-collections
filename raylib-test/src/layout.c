@@ -1,20 +1,13 @@
 #include "layout.h"
+#include "config.h"
 
-char hour[MAX_INPUT_HOURS + 1] = "\0";
-int hourDigit = 0;
+char hourDigit[MAX_INPUT_HOURS + 1] = "\0";
+char minDigit[MAX_INPUT_MIN + 1] = "\0";
+char secDigit[MAX_INPUT_SEC + 1] = "\0";
 
-char min[MAX_INPUT_MIN + 1] = "\0";
-int minuteDigit = 0;
-
-char sec[MAX_INPUT_SEC + 1] = "\0";
-int secondDigit = 0;
+int hourCurrentDigit, minCurrentDigit, secCurrentDigit = 0;
 
 BUTTONS_STATE active_button = NONE;
-
-Rectangle boxHour = { WINDOW_HEIGHT / 2.0f - 100, 180, 50, 50 };
-Rectangle minHour = { WINDOW_HEIGHT / 2.0f - 200, 180, 50, 50 };
-Rectangle secHour = { WINDOW_HEIGHT / 2.0f - 300, 180, 50, 50 };
-Rectangle startTimer = { WINDOW_HEIGHT / 2.0f - 100, 250, 50, 50 };
 
 void CheckCollision(Rectangle box) {
 	if (CheckCollisionPointRec(GetMousePosition(), box)) {
@@ -31,10 +24,10 @@ void CheckCollision(Rectangle box) {
 void GetInput() {
 }
 
-void DrawAllRect() {
+void DrawScene() {
 
 }
 
-void DrawRectWrapper() {
+void DrawAllRect() {
 
 }
