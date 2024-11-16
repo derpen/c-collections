@@ -19,10 +19,11 @@ typedef struct {
 
 TIMER_BUTTONS allButtons[3];
 
-//void start_countdown();
-void check_collision(TIMER_BUTTONS* buttons);
+void start_countdown(char hour, char min, char sec);
+void check_collision(Rectangle box, bool* mouseClicked);
 void receive_input(TIMER_BUTTONS* buttons, bool limit);
 void draw_scene(TIMER_BUTTONS buttons);
+void draw_start_button(START_BUTTON button);
 
 int main() {
 
@@ -34,14 +35,14 @@ int main() {
 	START_BUTTON startButton;
 
 	// TODO: Is this the C way of initializing data?
-	Rectangle boxHour = { WINDOW_HEIGHT / 2.0f - 100, 100, 50, 50 };
-	Rectangle minHour = { WINDOW_HEIGHT / 2.0f, 100, 50, 50 };
-	Rectangle secHour = { WINDOW_HEIGHT / 2.0f + 100, 100, 50, 50 };
-	Rectangle startTimer = { WINDOW_HEIGHT / 2.0f - 100, 250, 50, 50 };
+	Rectangle boxHour = { WINDOW_HEIGHT / 2.0f - 100, 50, 50, 50 };
+	Rectangle boxMin = { WINDOW_HEIGHT / 2.0f, 50, 50, 50 };
+	Rectangle boxSec = { WINDOW_HEIGHT / 2.0f + 100, 50, 50, 50 };
+	Rectangle boxStart = { WINDOW_HEIGHT / 2.0f - 100, 125, 250, 50 };
 	hourButton.box = boxHour;
-	minButton.box = minHour;
-	secButton.box = secHour;
-	startButton.box = startTimer;
+	minButton.box = boxMin;
+	secButton.box = boxSec;
+	startButton.box = boxStart;
 	hourButton.mouseClicked = minButton.mouseClicked = secButton.mouseClicked = startButton.mouseClicked = false;
 	hourButton.current_digit_amount = minButton.current_digit_amount = secButton.current_digit_amount = 0;
 	hourButton.current_value[0] = minButton.current_value[0] = secButton.current_value[0] = '\0';
@@ -50,18 +51,44 @@ int main() {
 	allButtons[1] = minButton;
 	allButtons[2] = secButton;
 
+	unsigned int fpsCounter = 0;
 	SetTargetFPS(60);
 
+	bool startTimer = false;
+
 	while (!WindowShouldClose()) {
-		// 2 is the size of allButtons
+		fpsCounter++;
+
+		// 2 is the amount of allButtons
 		for (int i = 0; i <= 2; i++) {
-			check_collision(&allButtons[i]);
+
+			// Check collision for the timer buttons
+			check_collision(
+				allButtons[i].box,
+				&allButtons[i].mouseClicked
+			);
+
 			if (i == 0) {
 				receive_input(&allButtons[i], false);
 			}
 			else {
 				receive_input(&allButtons[i], true);
 			}
+		}
+
+		// Check collision for the start button
+		check_collision(
+			startButton.box,
+			&startButton.mouseClicked
+		);
+
+		if (startTimer) {
+			if((fpsCounter / 60) % 2 == 0) // Hopefully runs every sec
+			start_countdown(
+				allButtons[0].current_value,
+				allButtons[1].current_value,
+				allButtons[2].current_value
+			);
 		}
 
 		// Drawing part
@@ -71,6 +98,7 @@ int main() {
 			for (int i = 0; i <= 2; i++) {
 				draw_scene(allButtons[i]);
 			}
+			draw_start_button(startButton);
 
 		EndDrawing();
 	}
@@ -80,15 +108,21 @@ int main() {
 	return 0;
 }
 
-void check_collision(TIMER_BUTTONS* buttons) {
-	if (CheckCollisionPointRec(GetMousePosition(), buttons->box)) {
+void start_countdown(char hour, char min, char sec) {
+	// Convert char to int, and countdown
+	// Count -1 each frame
+	printf("Something here\n");
+}
+
+void check_collision(Rectangle box, bool* mouseClicked) {
+	if (CheckCollisionPointRec(GetMousePosition(), box)) {
 		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-			buttons->mouseClicked = true;
+			*mouseClicked = true;
 		}
 	}
 	else {
 		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
-			buttons->mouseClicked = false;
+			*mouseClicked = false;
 	}
 }
 
@@ -136,5 +170,12 @@ void draw_scene(TIMER_BUTTONS buttons) {
 	DrawRectangleRec(buttons.box, LIGHTGRAY);
 	if(buttons.mouseClicked) DrawRectangleLines((int)buttons.box.x, (int)buttons.box.y, (int)buttons.box.width, (int)buttons.box.height, RED);
 	else DrawRectangleLines((int)buttons.box.x, (int)buttons.box.y, (int)buttons.box.width, (int)buttons.box.height, LIGHTGRAY);
-	DrawText(buttons.current_value, (int)buttons.box.x + 5, (int)buttons.box.y + 20, 40, MAROON);
+	DrawText(buttons.current_value, (int)buttons.box.x + 5, (int)buttons.box.y + 10, 38, MAROON);
+}
+
+void draw_start_button(START_BUTTON button) {
+	DrawRectangleRec(button.box, LIGHTGRAY);
+	if(button.mouseClicked) DrawRectangleLines((int)button.box.x, (int)button.box.y, (int)button.box.width, (int)button.box.height, RED);
+	else DrawRectangleLines((int)button.box.x, (int)button.box.y, (int)button.box.width, (int)button.box.height, LIGHTGRAY);
+	DrawText("Start Timer", (int)button.box.x + 5, (int)button.box.y + 10, 40, MAROON);
 }
