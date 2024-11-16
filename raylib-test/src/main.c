@@ -55,6 +55,7 @@ int main() {
 	SetTargetFPS(60);
 
 	bool startTimer = false;
+	bool startTimerLastState = false;
 
 	while (!WindowShouldClose()) {
 		fpsCounter++;
@@ -76,19 +77,29 @@ int main() {
 			}
 		}
 
-		// Check collision for the start button
+		// Check collision for the start button and toggle startTimer bool
+		// TODO: make this so that you have to click the timer button twice to toggle
+		// Since the timer will change to a pause timer when countdown is triggered
 		check_collision(
 			startButton.box,
 			&startButton.mouseClicked
 		);
+		if (startButton.mouseClicked != startTimerLastState) {
+			startTimer = !startTimer;
+			startTimerLastState = startButton.mouseClicked;
+		}
 
 		if (startTimer) {
-			if((fpsCounter / 60) % 2 == 0) // Hopefully runs every sec
-			start_countdown(
-				allButtons[0].current_value,
-				allButtons[1].current_value,
-				allButtons[2].current_value
-			);
+			if (fpsCounter / 60 == 1) // Hopefully runs every sec
+			{
+				start_countdown(
+					allButtons[0].current_value,
+					allButtons[1].current_value,
+					allButtons[2].current_value
+				);
+
+				fpsCounter = 0;
+			}
 		}
 
 		// Drawing part
@@ -111,7 +122,7 @@ int main() {
 void start_countdown(char hour, char min, char sec) {
 	// Convert char to int, and countdown
 	// Count -1 each frame
-	printf("Something here\n");
+	printf("Hi \n");
 }
 
 void check_collision(Rectangle box, bool* mouseClicked) {
