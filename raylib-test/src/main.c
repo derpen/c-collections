@@ -19,7 +19,7 @@ typedef struct {
 
 TIMER_BUTTONS allButtons[3];
 
-void start_countdown(char hour, char min, char sec);
+void start_countdown(int* hour, int* min, int* sec);
 void check_collision(Rectangle box, bool* mouseClicked);
 void receive_input(TIMER_BUTTONS* buttons, bool limit);
 void draw_scene(TIMER_BUTTONS buttons);
@@ -51,11 +51,16 @@ int main() {
 	allButtons[1] = minButton;
 	allButtons[2] = secButton;
 
+	int hour;
+	int minute;
+	int second;
+
 	unsigned int fpsCounter = 0;
 	SetTargetFPS(60);
 
 	bool startTimer = false;
 	bool startTimerLastState = false;
+	bool isTimerComplete = false;
 
 	while (!WindowShouldClose()) {
 		fpsCounter++;
@@ -77,6 +82,19 @@ int main() {
 			}
 		}
 
+		char hour_value = allButtons[0].current_value[0];
+		char min_value = allButtons[1].current_value[0];
+		char sec_value = allButtons[2].current_value[0];
+		if (hour_value != '\0' && min_value != '\0' && sec_value != '\0') {
+			hour = hour_value - '0';
+			minute = min_value - '0';
+			second = sec_value - '0';
+			isTimerComplete = true;
+		}
+		else {
+			isTimerComplete = false;
+		}
+
 		// Check collision for the start button and toggle startTimer bool
 		// TODO: make this so that you have to click the timer button twice to toggle
 		// Since the timer will change to a pause timer when countdown is triggered
@@ -85,17 +103,19 @@ int main() {
 			&startButton.mouseClicked
 		);
 		if (startButton.mouseClicked != startTimerLastState) {
-			startTimer = !startTimer;
-			startTimerLastState = startButton.mouseClicked;
+			if (isTimerComplete) {
+				startTimer = !startTimer;
+				startTimerLastState = startButton.mouseClicked;
+			}
 		}
 
 		if (startTimer) {
 			if (fpsCounter / 60 == 1) // Hopefully runs every sec
 			{
 				start_countdown(
-					allButtons[0].current_value,
-					allButtons[1].current_value,
-					allButtons[2].current_value
+					&hour,
+					&minute,
+					&second
 				);
 
 				fpsCounter = 0;
@@ -119,10 +139,25 @@ int main() {
 	return 0;
 }
 
-void start_countdown(char hour, char min, char sec) {
-	// Convert char to int, and countdown
-	// Count -1 each frame
-	printf("Hi \n");
+void start_countdown(int* hour, int* min, int* sec) {
+	(*sec)--;
+
+	if (*sec < 0) {
+		*sec = 59;
+		(*min)--;
+	}
+
+	if (*min < 0) {
+		*min = 59;
+		(*hour)--;
+	}
+
+	if (*hour < 0) {
+		//TODO: things done here, maybe another flag ? or maybe the function returns bool
+		*hour = 23;
+	}
+
+	printf("%d:%d:%d \n", *hour, *min, *sec);
 }
 
 void check_collision(Rectangle box, bool* mouseClicked) {
