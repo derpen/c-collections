@@ -5,6 +5,8 @@
 #define WINDOW_HEIGHT 600
 #define WINDOW_WIDTH 200
 
+// Make sure to check the TODOs :3
+
 typedef struct {
 	bool mouseClicked;
 	char current_value[3];
@@ -19,7 +21,7 @@ typedef struct {
 
 TIMER_BUTTONS allButtons[3];
 
-void start_countdown(int* hour, int* min, int* sec);
+bool start_countdown(int* hour, int* min, int* sec);
 void check_collision(Rectangle box, bool* mouseClicked);
 void receive_input(TIMER_BUTTONS* buttons, bool limit);
 void draw_scene(TIMER_BUTTONS buttons);
@@ -51,9 +53,9 @@ int main() {
 	allButtons[1] = minButton;
 	allButtons[2] = secButton;
 
-	int hour;
-	int minute;
-	int second;
+	int hour = 0;
+	int minute = 0;
+	int second = 0;
 
 	unsigned int fpsCounter = 0;
 	SetTargetFPS(60);
@@ -61,38 +63,43 @@ int main() {
 	bool startTimer = false;
 	bool startTimerLastState = false;
 	bool isTimerComplete = false;
+	bool allowModifyTimer = true;
 
 	while (!WindowShouldClose()) {
 		fpsCounter++;
 
-		// 2 is the amount of allButtons
-		for (int i = 0; i <= 2; i++) {
+		if (allowModifyTimer) {
+			// 2 is the amount of allButtons
+			for (int i = 0; i <= 2; i++) {
 
-			// Check collision for the timer buttons
-			check_collision(
-				allButtons[i].box,
-				&allButtons[i].mouseClicked
-			);
+				// Check collision for the timer buttons
+				check_collision(
+					allButtons[i].box,
+					&allButtons[i].mouseClicked
+				);
 
-			if (i == 0) {
-				receive_input(&allButtons[i], false);
+				if (i == 0) {
+					receive_input(&allButtons[i], false);
+				}
+				else {
+					receive_input(&allButtons[i], true);
+				}
+			}
+
+			// TODO
+			// Make sure they are not assigned
+			char* hour_value = allButtons[0].current_value;
+			char* min_value = allButtons[1].current_value;
+			char* sec_value = allButtons[2].current_value;
+			if (hour_value[0] != '\0' && min_value[0] != '\0' && sec_value[0] != '\0') {
+				hour = (*hour_value) - '0';
+				minute = (*min_value) - '0';
+				second = (*sec_value) - '0';
+				isTimerComplete = true;
 			}
 			else {
-				receive_input(&allButtons[i], true);
+				isTimerComplete = false;
 			}
-		}
-
-		char hour_value = allButtons[0].current_value[0];
-		char min_value = allButtons[1].current_value[0];
-		char sec_value = allButtons[2].current_value[0];
-		if (hour_value != '\0' && min_value != '\0' && sec_value != '\0') {
-			hour = hour_value - '0';
-			minute = min_value - '0';
-			second = sec_value - '0';
-			isTimerComplete = true;
-		}
-		else {
-			isTimerComplete = false;
 		}
 
 		// Check collision for the start button and toggle startTimer bool
@@ -105,6 +112,7 @@ int main() {
 		if (startButton.mouseClicked != startTimerLastState) {
 			if (isTimerComplete) {
 				startTimer = !startTimer;
+				allowModifyTimer = !allowModifyTimer;
 				startTimerLastState = startButton.mouseClicked;
 			}
 		}
@@ -112,11 +120,19 @@ int main() {
 		if (startTimer) {
 			if (fpsCounter / 60 == 1) // Hopefully runs every sec
 			{
-				start_countdown(
+				bool timerDone = start_countdown(
 					&hour,
 					&minute,
 					&second
 				);
+
+				if (timerDone) {
+					//TODO
+					// might wanna move this somewhere
+					printf("Done :D \n");
+					startTimer = !startTimer;
+					allowModifyTimer = !allowModifyTimer;
+				}
 
 				fpsCounter = 0;
 			}
@@ -139,7 +155,7 @@ int main() {
 	return 0;
 }
 
-void start_countdown(int* hour, int* min, int* sec) {
+bool start_countdown(int* hour, int* min, int* sec) {
 	(*sec)--;
 
 	if (*sec < 0) {
@@ -154,10 +170,10 @@ void start_countdown(int* hour, int* min, int* sec) {
 
 	if (*hour < 0) {
 		//TODO: things done here, maybe another flag ? or maybe the function returns bool
-		*hour = 23;
+		return true;
 	}
 
-	printf("%d:%d:%d \n", *hour, *min, *sec);
+	return false;
 }
 
 void check_collision(Rectangle box, bool* mouseClicked) {
