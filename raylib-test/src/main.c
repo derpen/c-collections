@@ -21,7 +21,7 @@ typedef struct {
 
 TIMER_BUTTONS allButtons[3];
 
-bool start_countdown(int* hour, int* min, int* sec);
+bool start_countdown(int* hour, int* min, int* sec, TIMER_BUTTONS* buttons[]);
 void check_collision(Rectangle box, bool* mouseClicked);
 void receive_input(TIMER_BUTTONS* buttons, bool limit);
 void draw_scene(TIMER_BUTTONS buttons);
@@ -120,10 +120,13 @@ int main() {
 		if (startTimer) {
 			if (fpsCounter / 60 == 1) // Hopefully runs every sec
 			{
+				printf("FCK \n");
+
 				bool timerDone = start_countdown(
 					&hour,
 					&minute,
-					&second
+					&second,
+					&allButtons
 				);
 
 				if (timerDone) {
@@ -155,7 +158,7 @@ int main() {
 	return 0;
 }
 
-bool start_countdown(int* hour, int* min, int* sec) {
+bool start_countdown(int* hour, int* min, int* sec, TIMER_BUTTONS* buttons[]){
 	(*sec)--;
 
 	if (*sec < 0) {
@@ -169,7 +172,6 @@ bool start_countdown(int* hour, int* min, int* sec) {
 	}
 
 	if (*hour < 0) {
-		//TODO: things done here, maybe another flag ? or maybe the function returns bool
 		return true;
 	}
 
