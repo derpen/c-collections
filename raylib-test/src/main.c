@@ -53,6 +53,9 @@ int main() {
 	allButtons[1] = minButton;
 	allButtons[2] = secButton;
 
+	InitAudioDevice();      // Initialize audio device
+	Sound alarmSFX = LoadSound("res/passingoftime.ogg"); // Load alarm sfx
+
 	int hour = 0;
 	int minute = 0;
 	int second = 0;
@@ -130,6 +133,10 @@ int main() {
 				if (timerDone) {
 					//TODO
 					// might wanna move this somewhere ?
+					// A BUG HERE WHERE THIS GETS CALLED AGAIN WHEN DESELECTING BUTTON IF TIMER IS 00:00:00
+					// MIGHT BE FIXED BY SIMPLY MAKING TIMER BUTTON A TOGGLE BETWEEN ITSELF
+					printf("Done :3 \n");
+					PlaySound(alarmSFX);
 					startTimer = !startTimer;
 					allowModifyTimer = !allowModifyTimer;
 				}
