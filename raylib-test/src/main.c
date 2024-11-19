@@ -21,7 +21,7 @@ typedef struct {
 
 TIMER_BUTTONS allButtons[3];
 
-bool start_countdown(int* hour, int* min, int* sec, TIMER_BUTTONS* buttons[]);
+bool start_countdown(int* hour, int* min, int* sec, TIMER_BUTTONS* buttons);
 void check_collision(Rectangle box, bool* mouseClicked);
 void receive_input(TIMER_BUTTONS* buttons, bool limit);
 void draw_scene(TIMER_BUTTONS buttons);
@@ -118,21 +118,18 @@ int main() {
 		}
 
 		if (startTimer) {
-			if (fpsCounter / 60 == 1) // Hopefully runs every sec
+			if ((fpsCounter / 60) % 2 == 1) // Hopefully runs every sec
 			{
-				printf("FCK \n");
-
 				bool timerDone = start_countdown(
 					&hour,
 					&minute,
 					&second,
-					&allButtons
+					allButtons
 				);
 
 				if (timerDone) {
 					//TODO
-					// might wanna move this somewhere
-					printf("Done :D \n");
+					// might wanna move this somewhere ?
 					startTimer = !startTimer;
 					allowModifyTimer = !allowModifyTimer;
 				}
@@ -158,7 +155,7 @@ int main() {
 	return 0;
 }
 
-bool start_countdown(int* hour, int* min, int* sec, TIMER_BUTTONS* buttons[]){
+bool start_countdown(int* hour, int* min, int* sec, TIMER_BUTTONS* buttons){
 	(*sec)--;
 
 	if (*sec < 0) {
@@ -174,6 +171,10 @@ bool start_countdown(int* hour, int* min, int* sec, TIMER_BUTTONS* buttons[]){
 	if (*hour < 0) {
 		return true;
 	}
+
+	sprintf_s(buttons[0].current_value, 3, "%d", (*hour));
+	sprintf_s(buttons[1].current_value, 3, "%d", (*min));
+	sprintf_s(buttons[2].current_value, 3, "%d", (*sec));
 
 	return false;
 }
