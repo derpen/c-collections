@@ -22,7 +22,7 @@ typedef struct {
 TIMER_BUTTONS allButtons[3];
 
 bool start_countdown(int* hour, int* min, int* sec, TIMER_BUTTONS* buttons);
-void check_collision(Rectangle box, bool* mouseClicked);
+void check_collision(Rectangle box, bool* mouseClicked, bool isStartButton);
 void receive_input(TIMER_BUTTONS* buttons, bool limit);
 void draw_scene(TIMER_BUTTONS buttons);
 void draw_start_button(START_BUTTON button);
@@ -81,7 +81,8 @@ int main() {
 				// Check collision for the timer buttons
 				check_collision(
 					allButtons[i].box,
-					&allButtons[i].mouseClicked
+					&allButtons[i].mouseClicked,
+					false // not start button
 				);
 
 				if (i == 0) {
@@ -119,7 +120,8 @@ int main() {
 		// Since the timer will change to a pause timer when countdown is triggered
 		check_collision(
 			startButton.box,
-			&startButton.mouseClicked
+			&startButton.mouseClicked,
+			true // is start button
 		);
 		if (startButton.mouseClicked != startTimerLastState) {
 			if (isTimerComplete) {
@@ -198,15 +200,17 @@ bool start_countdown(int* hour, int* min, int* sec, TIMER_BUTTONS* buttons){
 	return false;
 }
 
-void check_collision(Rectangle box, bool* mouseClicked) {
+void check_collision(Rectangle box, bool* mouseClicked, bool isStartButton) {
 	if (CheckCollisionPointRec(GetMousePosition(), box)) {
 		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
 			*mouseClicked = !*mouseClicked;
 		}
 	}
 	else {
-		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
-			*mouseClicked = false;
+		if (!isStartButton) {
+			if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+				*mouseClicked = false;
+		}
 	}
 }
 
@@ -222,9 +226,6 @@ void receive_input(TIMER_BUTTONS* buttons, bool limit) {
 				// TODO: add 0 in the front if theres only one digit
 				// Might be a bit too hard actually
 
-				// Another TODO:
-				// If digit is currently just 0, replaces it instead of appending
-				// and if digit is empty, replace it with 0
 				if (buttons->current_value[0] == '0') {
 					buttons->current_digit_amount = 0;
 				}
