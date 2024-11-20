@@ -58,8 +58,7 @@ int main() {
 	allButtons[2] = secButton;
 
 	InitAudioDevice();   
-	// Passing of time by 4leafstudios
-	Sound alarmSFX = LoadSound("res/passingoftime.ogg"); 
+	Sound alarmSFX = LoadSound("res/passingoftime.ogg");  // Passing of time by 4leafstudios
 
 	int hour = 0;
 	int minute = 0;
@@ -107,7 +106,9 @@ int main() {
 				minute = atoi(min_value);
 				second = atoi(sec_value);
 
-				isTimerComplete = true;
+				if (hour != 0 || minute != 0 || second != 0) { // Only start if at least one is filled
+					isTimerComplete = true;
+				}
 			}
 			else {
 				isTimerComplete = false;
@@ -140,6 +141,7 @@ int main() {
 				);
 
 				if (timerDone) {
+					// Reset button and play audio
 					//TODO
 					// might wanna move this somewhere ?
 					printf("Done :3 \n");
@@ -198,7 +200,7 @@ bool start_countdown(int* hour, int* min, int* sec, TIMER_BUTTONS* buttons){
 void check_collision(Rectangle box, bool* mouseClicked) {
 	if (CheckCollisionPointRec(GetMousePosition(), box)) {
 		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-			*mouseClicked = true;
+			*mouseClicked = !*mouseClicked;
 		}
 	}
 	else {
