@@ -73,8 +73,6 @@ int main() {
 	bool allowModifyTimer = true;
 
 	while (!WindowShouldClose()) {
-		fpsCounter++;
-
 		if (allowModifyTimer) {
 			// 2 is the amount of allButtons
 			for (int i = 0; i <= 2; i++) {
@@ -131,6 +129,8 @@ int main() {
 		}
 
 		if (startTimer) {
+			fpsCounter++;
+
 			if ((fpsCounter / 60) % 2 == 1) // Hopefully runs every sec
 			{
 				bool timerDone = start_countdown(
