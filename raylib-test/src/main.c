@@ -51,7 +51,8 @@ int main() {
 	startButton.box = boxStart;
 	hourButton.mouseClicked = minButton.mouseClicked = secButton.mouseClicked = startButton.mouseClicked = false;
 	hourButton.current_digit_amount = minButton.current_digit_amount = secButton.current_digit_amount = 0;
-	hourButton.current_value[0] = minButton.current_value[0] = secButton.current_value[0] = '\0';
+	hourButton.current_value[0] = minButton.current_value[0] = secButton.current_value[0] = '0';
+	hourButton.current_value[1] = minButton.current_value[1] = secButton.current_value[1] = '\0';
 
 	allButtons[0] = hourButton;
 	allButtons[1] = minButton;
@@ -224,6 +225,10 @@ void receive_input(TIMER_BUTTONS* buttons, bool limit) {
 				// Another TODO:
 				// If digit is currently just 0, replaces it instead of appending
 				// and if digit is empty, replace it with 0
+				if (buttons->current_value[0] == '0') {
+					buttons->current_digit_amount = 0;
+				}
+
 				buttons->current_value[buttons->current_digit_amount] = (char)key;
 				buttons->current_value[buttons->current_digit_amount + 1] = '\0';
 				buttons->current_digit_amount++;
@@ -244,8 +249,13 @@ void receive_input(TIMER_BUTTONS* buttons, bool limit) {
 
 		if (IsKeyPressed(KEY_BACKSPACE)) {
 			buttons->current_digit_amount--;
-			if (buttons->current_digit_amount < 0) buttons->current_digit_amount = 0;
-			buttons->current_value[buttons->current_digit_amount] = '\0';
+			if (buttons->current_digit_amount <= 0) {
+				buttons->current_digit_amount = 0;
+				buttons->current_value[0] = '0';
+			}
+			else {
+				buttons->current_value[buttons->current_digit_amount] = '\0';
+			}
 		}
 	}
 	else {
