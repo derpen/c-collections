@@ -94,10 +94,14 @@ int main() {
 			char* hour_value = allButtons[0].current_value;
 			char* min_value = allButtons[1].current_value;
 			char* sec_value = allButtons[2].current_value;
-			if (hour_value[0] != '\0' && min_value[0] != '\0' && sec_value[0] != '\0') {
-				hour = (*hour_value) - '0';
-				minute = (*min_value) - '0';
-				second = (*sec_value) - '0';
+			if (
+				hour_value[0] != '\0' && min_value[0] != '\0' && sec_value[0] != '\0' // This checks if its empty
+				) 
+			{
+				hour = atoi(hour_value);
+				minute = atoi(min_value);
+				second = atoi(sec_value);
+
 				isTimerComplete = true;
 			}
 			else {
