@@ -37,6 +37,10 @@ int main() {
 	START_BUTTON startButton;
 
 	// TODO: Is this the C way of initializing data?
+
+	// TODO: beautify UI
+	// Target UI: old windows XP style UI
+	// replicate it somehow with raylib, idk how yet
 	Rectangle boxHour = { WINDOW_HEIGHT / 2.0f - 100, 50, 50, 50 };
 	Rectangle boxMin = { WINDOW_HEIGHT / 2.0f, 50, 50, 50 };
 	Rectangle boxSec = { WINDOW_HEIGHT / 2.0f + 100, 50, 50, 50 };
@@ -53,8 +57,9 @@ int main() {
 	allButtons[1] = minButton;
 	allButtons[2] = secButton;
 
-	InitAudioDevice();      // Initialize audio device
-	Sound alarmSFX = LoadSound("res/passingoftime.ogg"); // Load alarm sfx
+	InitAudioDevice();   
+	// Passing of time by 4leafstudios
+	Sound alarmSFX = LoadSound("res/passingoftime.ogg"); 
 
 	int hour = 0;
 	int minute = 0;
@@ -137,12 +142,12 @@ int main() {
 				if (timerDone) {
 					//TODO
 					// might wanna move this somewhere ?
-					// A BUG HERE WHERE THIS GETS CALLED AGAIN WHEN DESELECTING BUTTON IF TIMER IS 00:00:00
-					// MIGHT BE FIXED BY SIMPLY MAKING TIMER BUTTON A TOGGLE BETWEEN ITSELF
 					printf("Done :3 \n");
 					PlaySound(alarmSFX);
 					startTimer = !startTimer;
 					allowModifyTimer = !allowModifyTimer;
+					startButton.mouseClicked = false;
+					startTimerLastState = false;
 				}
 
 				fpsCounter = 0;
@@ -213,6 +218,10 @@ void receive_input(TIMER_BUTTONS* buttons, bool limit) {
 			if ((key >= 48) && (key <= 57) && (buttons->current_digit_amount < 2)) {
 				// TODO: add 0 in the front if theres only one digit
 				// Might be a bit too hard actually
+
+				// Another TODO:
+				// If digit is currently just 0, replaces it instead of appending
+				// and if digit is empty, replace it with 0
 				buttons->current_value[buttons->current_digit_amount] = (char)key;
 				buttons->current_value[buttons->current_digit_amount + 1] = '\0';
 				buttons->current_digit_amount++;
