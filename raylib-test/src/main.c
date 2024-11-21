@@ -46,7 +46,6 @@ int main() {
 
 	// TODO: beautify UI
 	// Target UI: old windows XP style UI
-	// replicate it somehow with raylib, idk how yet
 	Rectangle boxHour = { WINDOW_HEIGHT / 2.0f - 100, 50, 50, 50 };
 	Rectangle boxMin = { WINDOW_HEIGHT / 2.0f, 50, 50, 50 };
 	Rectangle boxSec = { WINDOW_HEIGHT / 2.0f + 100, 50, 50, 50 };
@@ -102,8 +101,6 @@ int main() {
 				}
 			}
 
-			// TODO
-			// Make sure they are not assigned
 			char* hour_value = allButtons[0].current_value;
 			char* min_value = allButtons[1].current_value;
 			char* sec_value = allButtons[2].current_value;
@@ -125,8 +122,6 @@ int main() {
 		}
 
 		// Check collision for the start button and toggle startTimer bool
-		// TODO: make this so that you have to click the timer button twice to toggle
-		// Since the timer will change to a pause timer when countdown is triggered
 		check_collision(
 			startButton.box,
 			&startButton.mouseClicked,
@@ -283,9 +278,9 @@ void draw_scene(TIMER_BUTTONS buttons) {
 }
 
 void draw_start_button(START_BUTTON button, bool startTimer) {
-	DrawRectangleRounded(button.box, 0.1f, 0, WHITE); // float roundness, int segments, Color color
+	DrawRectangleRounded(button.box, 0.1f, 0, WHITE);
 
-	if(button.mouseClicked) DrawRectangleRoundedLines(button.box, 0.1f, 0, 1.0f, SKYBLUE); //  Rectangle rec, float roundness, int segments, float linethick, Color color
+	if(button.mouseClicked) DrawRectangleRoundedLines(button.box, 0.1f, 0, 1.0f, SKYBLUE);
 	else DrawRectangleRoundedLines(button.box, 0.1f, 0, 1.0f, LIGHTGRAY);
 
 	if (startTimer) {
