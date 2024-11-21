@@ -35,7 +35,7 @@ void draw_start_button(START_BUTTON button, bool startTimer);
 
 int main() {
 
-	InitWindow(WINDOW_HEIGHT, WINDOW_WIDTH, "raylib-test");
+	InitWindow(WINDOW_HEIGHT, WINDOW_WIDTH, "Timer");
 
 	TIMER_BUTTONS hourButton;
 	TIMER_BUTTONS minButton;
@@ -46,6 +46,11 @@ int main() {
 
 	// TODO: beautify UI
 	// Target UI: old windows XP style UI
+	// Font sizing, spacing, and alignment still suck
+	// Color still does not seem right
+	// Text looks blurry
+	// Set proper window resolution, right now its tooooo wide
+	// TODO BUG: there's also this bug where the cursor would try to change into input mode for some reason
 	Rectangle boxHour = { WINDOW_HEIGHT / 2.0f - 100, 50, 50, 50 };
 	Rectangle boxMin = { WINDOW_HEIGHT / 2.0f, 50, 50, 50 };
 	Rectangle boxSec = { WINDOW_HEIGHT / 2.0f + 100, 50, 50, 50 };
@@ -149,8 +154,10 @@ int main() {
 
 				if (timerDone) {
 					// Reset button and play audio
-					//TODO
+					// TODO
 					// might wanna move this somewhere ?
+					// TODO: BUG
+					// IF timer is completed once, start button can be pressed despite all the time showing 0
 					printf("Done :3 \n");
 					PlaySound(alarmSFX);
 					startTimer = !startTimer;
