@@ -5,18 +5,24 @@
 #define WINDOW_HEIGHT 600
 #define WINDOW_WIDTH 200
 
+// Color defines
+#define GRAYISH (Color) {100,100,100,255}
+#define BEIGISH (Color) {245,245,220,255}
+
 // Make sure to check the TODOs :3
 
 typedef struct {
 	bool mouseClicked;
 	char current_value[3];
 	int current_digit_amount;
+	Font textFont;
 	Rectangle box;
 } TIMER_BUTTONS;
 
 typedef struct {
 	bool mouseClicked;
 	Rectangle box;
+	Font textFont;
 } START_BUTTON;
 
 TIMER_BUTTONS allButtons[3];
@@ -25,7 +31,7 @@ bool start_countdown(int* hour, int* min, int* sec, TIMER_BUTTONS* buttons);
 void check_collision(Rectangle box, bool* mouseClicked, bool isStartButton);
 void receive_input(TIMER_BUTTONS* buttons, bool limit);
 void draw_scene(TIMER_BUTTONS buttons);
-void draw_start_button(START_BUTTON button);
+void draw_start_button(START_BUTTON button, bool startTimer);
 
 int main() {
 
@@ -54,12 +60,15 @@ int main() {
 	hourButton.current_value[0] = minButton.current_value[0] = secButton.current_value[0] = '0';
 	hourButton.current_value[1] = minButton.current_value[1] = secButton.current_value[1] = '\0';
 
+	InitAudioDevice();   
+	Sound alarmSFX = LoadSound("res/passingoftime.ogg");  // Passing of time by 4leafstudios
+	Font tahomaFont = LoadFontEx("res/tahoma.ttf", 32, 0, 250);
+	SetTextLineSpacing(12); // Set line spacing for multiline text (when line breaks are included '\n')
+	hourButton.textFont = minButton.textFont = secButton.textFont =startButton.textFont = tahomaFont;
+
 	allButtons[0] = hourButton;
 	allButtons[1] = minButton;
 	allButtons[2] = secButton;
-
-	InitAudioDevice();   
-	Sound alarmSFX = LoadSound("res/passingoftime.ogg");  // Passing of time by 4leafstudios
 
 	int hour = 0;
 	int minute = 0;
@@ -161,12 +170,12 @@ int main() {
 
 		// Drawing part
 		BeginDrawing();
-			ClearBackground(RAYWHITE);
+			ClearBackground(BEIGISH);
 
 			for (int i = 0; i <= 2; i++) {
 				draw_scene(allButtons[i]);
 			}
-			draw_start_button(startButton);
+			draw_start_button(startButton, startTimer);
 
 		EndDrawing();
 	}
@@ -265,15 +274,24 @@ void receive_input(TIMER_BUTTONS* buttons, bool limit) {
 }
 
 void draw_scene(TIMER_BUTTONS buttons) {
-	DrawRectangleRec(buttons.box, LIGHTGRAY);
-	if(buttons.mouseClicked) DrawRectangleLines((int)buttons.box.x, (int)buttons.box.y, (int)buttons.box.width, (int)buttons.box.height, RED);
-	else DrawRectangleLines((int)buttons.box.x, (int)buttons.box.y, (int)buttons.box.width, (int)buttons.box.height, LIGHTGRAY);
-	DrawText(buttons.current_value, (int)buttons.box.x + 5, (int)buttons.box.y + 10, 38, MAROON);
+	DrawRectangleRounded(buttons.box, 0.1f, 0, WHITE); // float roundness, int segments, Color color
+
+	if(buttons.mouseClicked) DrawRectangleRoundedLines(buttons.box, 0.1f, 0, 1.0f, SKYBLUE); //  Rectangle rec, float roundness, int segments, float linethick, Color color
+	else DrawRectangleRoundedLines(buttons.box, 0.1f, 0, 1.0f, LIGHTGRAY);
+
+	DrawTextEx(buttons.textFont, buttons.current_value, (Vector2) { (int)buttons.box.x + 5, (int)buttons.box.y }, 38, 2, GRAYISH);
 }
 
-void draw_start_button(START_BUTTON button) {
-	DrawRectangleRec(button.box, LIGHTGRAY);
-	if(button.mouseClicked) DrawRectangleLines((int)button.box.x, (int)button.box.y, (int)button.box.width, (int)button.box.height, RED);
-	else DrawRectangleLines((int)button.box.x, (int)button.box.y, (int)button.box.width, (int)button.box.height, LIGHTGRAY);
-	DrawText("Start Timer", (int)button.box.x + 5, (int)button.box.y + 10, 40, MAROON);
+void draw_start_button(START_BUTTON button, bool startTimer) {
+	DrawRectangleRounded(button.box, 0.1f, 0, WHITE); // float roundness, int segments, Color color
+
+	if(button.mouseClicked) DrawRectangleRoundedLines(button.box, 0.1f, 0, 1.0f, SKYBLUE); //  Rectangle rec, float roundness, int segments, float linethick, Color color
+	else DrawRectangleRoundedLines(button.box, 0.1f, 0, 1.0f, LIGHTGRAY);
+
+	if (startTimer) {
+		DrawTextEx(button.textFont, "Pause Timer", (Vector2) { (int)button.box.x + 5, (int)button.box.y + 10 }, 40, 2, GRAYISH);
+	}
+	else {
+		DrawTextEx(button.textFont, "Start Timer", (Vector2) { (int)button.box.x + 5, (int)button.box.y + 10 }, 40, 2, GRAYISH);
+	}
 }
