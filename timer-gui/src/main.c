@@ -50,7 +50,6 @@ int main() {
 	// Color still does not seem right
 	// Text looks blurry
 	// Set proper window resolution, right now its tooooo wide
-	// TODO BUG: there's also this bug where the cursor would try to change into input mode for some reason
 	Rectangle boxHour = { WINDOW_HEIGHT / 2.0f - 100, 50, 50, 50 };
 	Rectangle boxMin = { WINDOW_HEIGHT / 2.0f, 50, 50, 50 };
 	Rectangle boxSec = { WINDOW_HEIGHT / 2.0f + 100, 50, 50, 50 };
@@ -159,8 +158,6 @@ int main() {
 					// Reset button and play audio
 					// TODO
 					// might wanna move this somewhere ?
-					// TODO: BUG
-					// IF timer is completed once, start button can be pressed despite all the time showing 0
 					printf("Done :3 \n");
 					PlaySound(alarmSFX);
 					startTimer = false;
@@ -231,8 +228,6 @@ void check_collision(Rectangle box, bool* mouseClicked, bool isStartButton) {
 
 void receive_input(TIMER_BUTTONS* buttons, bool limit) {
 	if (buttons->mouseClicked) {
-		SetMouseCursor(MOUSE_CURSOR_IBEAM);
-
 		int key = GetCharPressed();
 
 		while (key > 0) {
@@ -273,9 +268,6 @@ void receive_input(TIMER_BUTTONS* buttons, bool limit) {
 				buttons->current_value[buttons->current_digit_amount] = '\0';
 			}
 		}
-	}
-	else {
-		SetMouseCursor(MOUSE_CURSOR_DEFAULT);
 	}
 }
 
