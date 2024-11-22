@@ -35,6 +35,8 @@ void draw_start_button(START_BUTTON button, bool startTimer);
 
 int main() {
 
+	SetConfigFlags(FLAG_VSYNC_HINT | FLAG_MSAA_4X_HINT | FLAG_WINDOW_HIGHDPI); // hi-res
+
 	InitWindow(WINDOW_HEIGHT, WINDOW_WIDTH, "Timer");
 
 	TIMER_BUTTONS hourButton;
@@ -65,8 +67,9 @@ int main() {
 
 	InitAudioDevice();   
 	Sound alarmSFX = LoadSound("res/passingoftime.ogg");  // Passing of time by 4leafstudios
-	Font tahomaFont = LoadFontEx("res/tahoma.ttf", 32, 0, 250);
+	Font tahomaFont = LoadFontEx("res/tahoma.ttf", 64, 0, 250);
 	SetTextLineSpacing(12); // Set line spacing for multiline text (when line breaks are included '\n')
+	SetTextureFilter(GetFontDefault().texture, TEXTURE_FILTER_BILINEAR);
 	hourButton.textFont = minButton.textFont = secButton.textFont =startButton.textFont = tahomaFont;
 
 	allButtons[0] = hourButton;
