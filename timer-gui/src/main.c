@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "raylib/raylib.h"
 
-#define WINDOW_HEIGHT 600
-#define WINDOW_WIDTH 200
+#define WINDOW_HEIGHT 300
+#define WINDOW_WIDTH 150
 
 // Color defines
 #define GRAYISH (Color) {100,100,100,255}
@@ -32,6 +33,7 @@ void check_collision(Rectangle box, bool* mouseClicked, bool isStartButton);
 void receive_input(TIMER_BUTTONS* buttons, bool limit);
 void draw_scene(TIMER_BUTTONS buttons);
 void draw_start_button(START_BUTTON button, bool startTimer);
+void draw_colon(TIMER_BUTTONS button);
 
 int main() {
 
@@ -52,10 +54,10 @@ int main() {
 	// Color still does not seem right
 	// Text looks blurry
 	// Set proper window resolution, right now its tooooo wide
-	Rectangle boxHour = { WINDOW_HEIGHT / 2.0f - 100, 50, 50, 50 };
-	Rectangle boxMin = { WINDOW_HEIGHT / 2.0f, 50, 50, 50 };
-	Rectangle boxSec = { WINDOW_HEIGHT / 2.0f + 100, 50, 50, 50 };
-	Rectangle boxStart = { WINDOW_HEIGHT / 2.0f - 100, 125, 250, 50 };
+	Rectangle boxHour = { WINDOW_HEIGHT / 2.0f - 125, 25, 50, 50 };
+	Rectangle boxMin = { WINDOW_HEIGHT / 2.0f - 25, 25, 50, 50 };
+	Rectangle boxSec = { WINDOW_HEIGHT / 2.0f + 75, 25, 50, 50 };
+	Rectangle boxStart = { WINDOW_HEIGHT / 2.0f - 125, 80, 250, 50 };
 	hourButton.box = boxHour;
 	minButton.box = boxMin;
 	secButton.box = boxSec;
@@ -181,6 +183,11 @@ int main() {
 			for (int i = 0; i <= 2; i++) {
 				draw_scene(allButtons[i]);
 			}
+			
+			for (int i = 0; i <= 1; i++) {
+				draw_colon(allButtons[i]);
+			}
+
 			draw_start_button(startButton, startTimer);
 
 		EndDrawing();
@@ -280,7 +287,12 @@ void draw_scene(TIMER_BUTTONS buttons) {
 	if(buttons.mouseClicked) DrawRectangleRoundedLines(buttons.box, 0.1f, 0, 1.0f, SKYBLUE); //  Rectangle rec, float roundness, int segments, float linethick, Color color
 	else DrawRectangleRoundedLines(buttons.box, 0.1f, 0, 1.0f, LIGHTGRAY);
 
-	DrawTextEx(buttons.textFont, buttons.current_value, (Vector2) { (int)buttons.box.x + 5, (int)buttons.box.y }, 38, 2, GRAYISH);
+	if (strlen(buttons.current_value) > 1) {
+		DrawTextEx(buttons.textFont, buttons.current_value, (Vector2) { (int)buttons.box.x + 7, (int)buttons.box.y + 5 }, 38, 2, GRAYISH);
+	}
+	else {
+		DrawTextEx(buttons.textFont, buttons.current_value, (Vector2) { (int)buttons.box.x + 15, (int)buttons.box.y + 5}, 38, 2, GRAYISH);
+	}
 }
 
 void draw_start_button(START_BUTTON button, bool startTimer) {
@@ -290,9 +302,13 @@ void draw_start_button(START_BUTTON button, bool startTimer) {
 	else DrawRectangleRoundedLines(button.box, 0.1f, 0, 1.0f, LIGHTGRAY);
 
 	if (startTimer) {
-		DrawTextEx(button.textFont, "Pause Timer", (Vector2) { (int)button.box.x + 5, (int)button.box.y + 10 }, 40, 2, GRAYISH);
+		DrawTextEx(button.textFont, "Pause Timer", (Vector2) { (int)button.box.x + 30, (int)button.box.y + 5 }, 40, 2, GRAYISH);
 	}
 	else {
-		DrawTextEx(button.textFont, "Start Timer", (Vector2) { (int)button.box.x + 5, (int)button.box.y + 10 }, 40, 2, GRAYISH);
+		DrawTextEx(button.textFont, "Start Timer", (Vector2) { (int)button.box.x + 30, (int)button.box.y + 5 }, 40, 2, GRAYISH);
 	}
+}
+
+void draw_colon(TIMER_BUTTONS button) {
+	DrawTextEx(button.textFont, ":", (Vector2) { (int)button.box.x + 70, (int)button.box.y }, 40, 2, GRAYISH);
 }
