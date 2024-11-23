@@ -247,9 +247,6 @@ void receive_input(TIMER_BUTTONS* buttons, bool limit) {
 			if ((key >= 48) && (key <= 57) && (buttons->current_digit_amount < 2)) {
 				// TODO: add 0 in the front if theres only one digit
 				// Might be a bit too hard actually
-
-				// TODO BUG:
-				// If digit become one in length and reduced by countdown timer, needs to press backspace to add another char
 				if (buttons->current_value[0] == '0') {
 					buttons->current_digit_amount = 0;
 				}
