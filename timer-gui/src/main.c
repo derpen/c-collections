@@ -50,14 +50,12 @@ int main() {
 
 	// TODO: beautify UI
 	// Target UI: old windows XP style UI
-	// Font sizing, spacing, and alignment still suck
-	// Color still does not seem right
-	// Text looks blurry
-	// Set proper window resolution, right now its tooooo wide
-	Rectangle boxHour = { WINDOW_HEIGHT / 2.0f - 125, 25, 50, 50 };
-	Rectangle boxMin = { WINDOW_HEIGHT / 2.0f - 25, 25, 50, 50 };
-	Rectangle boxSec = { WINDOW_HEIGHT / 2.0f + 75, 25, 50, 50 };
-	Rectangle boxStart = { WINDOW_HEIGHT / 2.0f - 125, 80, 250, 50 };
+	// Can't really explain it, but current UI still is not satisfactory
+	// Make alarm keeps playing until user press deactivate alarm
+	Rectangle boxHour = { WINDOW_HEIGHT / 2.0f - 125, 20, 50, 50 };
+	Rectangle boxMin = { WINDOW_HEIGHT / 2.0f - 25, 20, 50, 50 };
+	Rectangle boxSec = { WINDOW_HEIGHT / 2.0f + 75, 20, 50, 50 };
+	Rectangle boxStart = { WINDOW_HEIGHT / 2.0f - 125, 85, 250, 50 };
 	hourButton.box = boxHour;
 	minButton.box = boxMin;
 	secButton.box = boxSec;
@@ -219,6 +217,10 @@ bool start_countdown(int* hour, int* min, int* sec, TIMER_BUTTONS* buttons){
 	sprintf_s(buttons[1].current_value, 3, "%d", (*min));
 	sprintf_s(buttons[2].current_value, 3, "%d", (*sec));
 
+	buttons[0].current_digit_amount = strlen(buttons[0].current_value);
+	buttons[1].current_digit_amount = strlen(buttons[1].current_value);
+	buttons[2].current_digit_amount = strlen(buttons[2].current_value);
+
 	return false;
 }
 
@@ -246,6 +248,8 @@ void receive_input(TIMER_BUTTONS* buttons, bool limit) {
 				// TODO: add 0 in the front if theres only one digit
 				// Might be a bit too hard actually
 
+				// TODO BUG:
+				// If digit become one in length and reduced by countdown timer, needs to press backspace to add another char
 				if (buttons->current_value[0] == '0') {
 					buttons->current_digit_amount = 0;
 				}
