@@ -51,7 +51,8 @@ int main() {
 	// TODO: beautify UI
 	// Target UI: old windows XP style UI
 	// Can't really explain it, but current UI still is not satisfactory
-	// Make alarm keeps playing until user press deactivate alarm
+	// Make alarm keeps playing until user press deactivate alarm <- Maybe not? Feels too complicated for a simple feature
+	// A lot of this mess could be solved with enum, but I'm too much of a noob to figure it out
 	Rectangle boxHour = { WINDOW_HEIGHT / 2.0f - 125, 20, 50, 50 };
 	Rectangle boxMin = { WINDOW_HEIGHT / 2.0f - 25, 20, 50, 50 };
 	Rectangle boxSec = { WINDOW_HEIGHT / 2.0f + 75, 20, 50, 50 };
