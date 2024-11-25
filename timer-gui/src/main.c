@@ -37,7 +37,7 @@ void draw_colon(TIMER_BUTTONS button);
 
 int main() {
 
-	SetConfigFlags(FLAG_VSYNC_HINT | FLAG_MSAA_4X_HINT | FLAG_WINDOW_HIGHDPI); // hi-res
+	SetConfigFlags(FLAG_VSYNC_HINT | FLAG_MSAA_4X_HINT | FLAG_WINDOW_HIGHDPI | FLAG_WINDOW_ALWAYS_RUN); // hi-res
 
 	InitWindow(WINDOW_HEIGHT, WINDOW_WIDTH, "Timer");
 
