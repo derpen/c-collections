@@ -6,6 +6,7 @@ Compile for now is only on visual studio
 
 TODO:
 * compile using make or something 
+* find better means of distributing
 
 ![image](https://media.discordapp.net/attachments/1310143520711114805/1310143593888878662/image.png?ex=674425ce&is=6742d44e&hm=5a900d842ed3f6cb92ebb26ff2e68f04bee0e889d1a09209acdc2dce637cb6b0&=&format=webp&quality=lossless)
 
