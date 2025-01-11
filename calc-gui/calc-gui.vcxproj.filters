@@ -18,5 +18,16 @@
     <ClCompile Include="src\calc.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="vendor\clay\clay_raylib.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="vendor\clay\clay.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\clay_impl.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
