@@ -1,4 +1,5 @@
-#include "../../src/clay_impl.h"
+#define CLAY_IMPLEMENTATION
+#include <clay/clay.h>
 #include <raylib/raylib.h>
 #include <raylib/raymath.h>
 #include "stdint.h"

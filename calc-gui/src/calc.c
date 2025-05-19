@@ -1,4 +1,3 @@
-#include "clay_impl.h"
 #include <clay/clay_raylib.c>
 #include <stdio.h>
 
