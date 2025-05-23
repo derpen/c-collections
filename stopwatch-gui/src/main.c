@@ -19,8 +19,10 @@ typedef struct {
     time_t TimeEnded;
 } TimeHistory;
 
-void draw_elapsed_time(double time, int32_t posX, int32_t posY);
+// Why am i using snake case again?
+void draw_elapsed_time(double time, int8_t TimeText[], int32_t posX, int32_t posY);
 void draw_history(TimeHistory TimeList[], uint32_t TimeCounted);
+char* convert_time_from_seconds(double time);
 
 int main() {
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Stopwatch");
@@ -139,8 +141,8 @@ int main() {
         DrawRectangleRounded(TotalTimeBox, 0.1, 1, WHITE);
         DrawRectangleRounded(CurrentTimeBox, 0.1, 1, WHITE);
         DrawRectangleRounded(HistoryBox, 0.1, 1, WHITE);
-        draw_elapsed_time(TotalTimeElapsed, (int32_t) (SCREEN_WIDTH / 2) + MARGIN + 10 , (int32_t) MARGIN + 15);
-        draw_elapsed_time(TimeElapsed, (int32_t)MARGIN + 10, (int32_t)MARGIN + 15);
+        draw_elapsed_time(TotalTimeElapsed, "Total Time Elapsed: ", (int32_t)(SCREEN_WIDTH / 2) + MARGIN + 10, (int32_t)MARGIN + 15);
+        draw_elapsed_time(TimeElapsed, "Lap Time: ", (int32_t)MARGIN + 10, (int32_t)MARGIN + 15);
 
         if (StopwatchStarted) 
         {
@@ -162,7 +164,7 @@ int main() {
 
         if (HasStartedOnce)
         {
-            //draw_history(AllTime, TimeCounted);
+            draw_history(AllTime, TimeCounted);
 	        DrawText("TIME ELAPSED\t\t\t\t\t\t\t\tDATE STARTED\t\t\t\t\t\t\t\tDATE ENDED", 50, (SCREEN_HEIGHT / 2) + 10, 20, RED);
         }
         
@@ -174,31 +176,41 @@ int main() {
 	return 0;
 }
 
-void draw_elapsed_time(double time, int32_t posX, int32_t posY)
+void draw_elapsed_time(double time, int8_t TimeText[], int32_t posX, int32_t posY)
 {
-	int8_t TimeText[] = "Time Elapsed: ";
-	int32_t TotalSecond = (int32_t) time % 60;
-	int32_t TotalMinute = (int32_t) (time / 60) % 60;
-    int32_t TotalHour = (int32_t) time / 3600;
-	int8_t TotalTime[1024];
-	snprintf(TotalTime, 1024, "%s %02d:%02d:%02d \n", TimeText, TotalHour, TotalMinute, TotalSecond);
-	
-	DrawText(TotalTime, posX, posY, 20, RED);
+    char* TotalTime = convert_time_from_seconds(time); // a bit cringe that it calls another function
+    char Formatted[32];
+    snprintf(Formatted, sizeof(Formatted), "%s: %s \n", TimeText, TotalTime);
+	DrawText(Formatted, posX, posY, 20, RED);
 }
 
 void draw_history(TimeHistory TimeList[], uint32_t TimeCounted) 
 {
     for (uint32_t i = 0; i < TimeCounted; i++)
     {
-        printf("Time at : %d \n", i);
+        char* TotalTime = convert_time_from_seconds(TimeList[i].TotalTime); // This bugs out
 
-	    //DrawText("TIME ELAPSED\t\t\t\t\t\t\t\tDATE STARTED\t\t\t\t\t\t\t\tDATE ENDED", 50, (SCREEN_HEIGHT / 2) + 10, 20, RED);
-
+        // Wacky barrage of snprintf
+	    char DateStarted[32];
         struct tm TimeStarted = *localtime(&TimeList[i].TimeStarted);
-	    printf("%d/%02d/%02d %02d:%02d:%02d\n", TimeStarted.tm_year + 1900, TimeStarted.tm_mon + 1, TimeStarted.tm_mday, TimeStarted.tm_hour, TimeStarted.tm_min, TimeStarted.tm_sec);
+	    snprintf(DateStarted, sizeof(DateStarted), "%d/%02d/%02d %02d:%02d:%02d ", TimeStarted.tm_year + 1900, TimeStarted.tm_mon + 1, TimeStarted.tm_mday, TimeStarted.tm_hour, TimeStarted.tm_min, TimeStarted.tm_sec);
 
+	    char DateEnded[32];
         struct tm TimeEnded = *localtime(&TimeList[i].TimeEnded);
-	    printf("%d/%02d/%02d %02d:%02d:%02d\n", TimeEnded.tm_year + 1900, TimeEnded.tm_mon + 1, TimeEnded.tm_mday, TimeEnded.tm_hour, TimeEnded.tm_min, TimeEnded.tm_sec);
+	    snprintf(DateEnded, sizeof(DateEnded), "%d/%02d/%02d %02d:%02d:%02d", TimeEnded.tm_year + 1900, TimeEnded.tm_mon + 1, TimeEnded.tm_mday, TimeEnded.tm_hour, TimeEnded.tm_min, TimeEnded.tm_sec);
+
+        char Formatted[128];
+        snprintf(Formatted, sizeof(Formatted), "%s\t\t\t\t\t\t\t\t%s\t\t\t\t\t\t\t\t%s\n", TotalTime, DateStarted, DateEnded);
+	    DrawText(Formatted, 50, 300 + (30 * i), 20, RED);
     }
 }
 
+char* convert_time_from_seconds(double time)
+{
+	int32_t TotalSecond = (int32_t) time % 60;
+	int32_t TotalMinute = (int32_t) (time / 60) % 60;
+    int32_t TotalHour = (int32_t) time / 3600;
+    char* TotalTime[16];
+	snprintf(TotalTime, 16, "%02d:%02d:%02d \n", TotalHour, TotalMinute, TotalSecond);
+    return TotalTime;
+}
