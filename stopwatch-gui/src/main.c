@@ -164,8 +164,8 @@ int main() {
 
         if (HasStartedOnce)
         {
-            draw_history(AllTime, TimeCounted);
 	        DrawText("TIME ELAPSED\t\t\t\t\t\t\t\tDATE STARTED\t\t\t\t\t\t\t\tDATE ENDED", 50, (SCREEN_HEIGHT / 2) + 10, 20, RED);
+            draw_history(AllTime, TimeCounted);
         }
         
         EndDrawing();
@@ -189,6 +189,8 @@ void draw_history(TimeHistory TimeList[], uint32_t TimeCounted)
     for (uint32_t i = 0; i < TimeCounted; i++)
     {
         char* TotalTime = convert_time_from_seconds(TimeList[i].TotalTime); // This bugs out
+        char TotalTimeFormatted[32];
+        snprintf(TotalTimeFormatted, sizeof(TotalTimeFormatted), "%s", TotalTime);
 
         // Wacky barrage of snprintf
 	    char DateStarted[32];
@@ -200,7 +202,7 @@ void draw_history(TimeHistory TimeList[], uint32_t TimeCounted)
 	    snprintf(DateEnded, sizeof(DateEnded), "%d/%02d/%02d %02d:%02d:%02d", TimeEnded.tm_year + 1900, TimeEnded.tm_mon + 1, TimeEnded.tm_mday, TimeEnded.tm_hour, TimeEnded.tm_min, TimeEnded.tm_sec);
 
         char Formatted[128];
-        snprintf(Formatted, sizeof(Formatted), "%s\t\t\t\t\t\t\t\t%s\t\t\t\t\t\t\t\t%s\n", TotalTime, DateStarted, DateEnded);
+        snprintf(Formatted, sizeof(Formatted), "%s\t\t\t\t\t\t\t\t%s\t\t\t\t\t\t\t\t%s\n", TotalTimeFormatted, DateStarted, DateEnded);
 	    DrawText(Formatted, 50, 300 + (30 * i), 20, RED);
     }
 }
@@ -211,6 +213,6 @@ char* convert_time_from_seconds(double time)
 	int32_t TotalMinute = (int32_t) (time / 60) % 60;
     int32_t TotalHour = (int32_t) time / 3600;
     char* TotalTime[16];
-	snprintf(TotalTime, 16, "%02d:%02d:%02d \n", TotalHour, TotalMinute, TotalSecond);
+	snprintf(TotalTime, 16, "%02d:%02d:%02d", TotalHour, TotalMinute, TotalSecond);
     return TotalTime;
 }
