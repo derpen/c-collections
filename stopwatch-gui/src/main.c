@@ -21,7 +21,7 @@ typedef struct {
 
 // Why am i using snake case again?
 void draw_elapsed_time(double time, int8_t TimeText[], int32_t posX, int32_t posY);
-void draw_history(TimeHistory TimeList[], uint32_t TimeCounted);
+void draw_history(TimeHistory TimeList[], uint32_t TimeCounted, RenderTexture2D target);
 char* convert_time_from_seconds(double time);
 
 int main() {
@@ -59,8 +59,10 @@ int main() {
         20.0f,
         (float)SCREEN_HEIGHT / 2,
         (float)(SCREEN_WIDTH - 40.0f),
-        (float)(SCREEN_HEIGHT / 2) - 20.0f,
+        (float)- (SCREEN_HEIGHT / 2) - 20.0f,
     };
+
+    RenderTexture2D HistoryBoxTexture = LoadRenderTexture((SCREEN_WIDTH - 40), (SCREEN_HEIGHT / 2) - 20);
 
     bool StopwatchStarted = false;
     bool HasStartedOnce = false;
@@ -122,6 +124,13 @@ int main() {
                 TimeElapsed = 0.0f;
                 TimeCounted = 0;
                 HasStartedOnce = false;
+
+                // Clear array and empty render texture
+                memset(AllTime, 0, sizeof(AllTime));
+                BeginTextureMode(HistoryBoxTexture);
+				ClearBackground(WHITE);
+				EndTextureMode();
+
             }
         }
 
@@ -140,7 +149,16 @@ int main() {
 
         DrawRectangleRounded(TotalTimeBox, 0.1, 1, WHITE);
         DrawRectangleRounded(CurrentTimeBox, 0.1, 1, WHITE);
-        DrawRectangleRounded(HistoryBox, 0.1, 1, WHITE);
+        DrawTextureRec(
+            HistoryBoxTexture.texture, 
+            HistoryBox, 
+            (Vector2) 
+			{ 
+                HistoryBox.x,
+                HistoryBox.y
+			}, 
+            WHITE
+        );
         draw_elapsed_time(TotalTimeElapsed, "Total Time Elapsed: ", (int32_t)(SCREEN_WIDTH / 2) + MARGIN + 10, (int32_t)MARGIN + 15);
         draw_elapsed_time(TimeElapsed, "Lap Time: ", (int32_t)MARGIN + 10, (int32_t)MARGIN + 15);
 
@@ -162,11 +180,8 @@ int main() {
             DrawRectangleRounded(ResetButton, 0.1, 1, GRAY);
         }
 
-        if (HasStartedOnce)
-        {
-	        DrawText("TIME ELAPSED\t\t\t\t\t\t\t\tDATE STARTED\t\t\t\t\t\t\t\tDATE ENDED", 50, (SCREEN_HEIGHT / 2) + 10, 20, RED);
-            draw_history(AllTime, TimeCounted);
-        }
+	    DrawText("TIME ELAPSED\t\t\t\t\t\t\t\tDATE STARTED\t\t\t\t\t\t\t\tDATE ENDED", 50, (SCREEN_HEIGHT / 2) + 10, 20, RED);
+        draw_history(AllTime, TimeCounted, HistoryBoxTexture);
         
         EndDrawing();
     }
@@ -184,11 +199,13 @@ void draw_elapsed_time(double time, int8_t TimeText[], int32_t posX, int32_t pos
 	DrawText(Formatted, posX, posY, 20, RED);
 }
 
-void draw_history(TimeHistory TimeList[], uint32_t TimeCounted) 
+void draw_history(TimeHistory TimeList[], uint32_t TimeCounted, RenderTexture2D target)
 {
+    BeginTextureMode(target);
+	ClearBackground(WHITE);
     for (uint32_t i = 0; i < TimeCounted; i++)
     {
-        char* TotalTime = convert_time_from_seconds(TimeList[i].TotalTime); // This bugs out
+        char* TotalTime = convert_time_from_seconds(TimeList[i].TotalTime);
         char TotalTimeFormatted[32];
         snprintf(TotalTimeFormatted, sizeof(TotalTimeFormatted), "%s", TotalTime);
 
@@ -202,9 +219,10 @@ void draw_history(TimeHistory TimeList[], uint32_t TimeCounted)
 	    snprintf(DateEnded, sizeof(DateEnded), "%d/%02d/%02d %02d:%02d:%02d", TimeEnded.tm_year + 1900, TimeEnded.tm_mon + 1, TimeEnded.tm_mday, TimeEnded.tm_hour, TimeEnded.tm_min, TimeEnded.tm_sec);
 
         char Formatted[128];
-        snprintf(Formatted, sizeof(Formatted), "%s\t\t\t\t\t\t\t\t%s\t\t\t\t\t\t\t\t%s\n", TotalTimeFormatted, DateStarted, DateEnded);
-	    DrawText(Formatted, 50, 300 + (30 * i), 20, RED);
+        snprintf(Formatted, sizeof(Formatted), "%s\t\t\t\t\t\t%s\t\t\t\t\t\t%s\n", TotalTimeFormatted, DateStarted, DateEnded);
+	    DrawText(Formatted, 50, 30 * i, 20, RED);
     }
+    EndTextureMode();
 }
 
 char* convert_time_from_seconds(double time)
