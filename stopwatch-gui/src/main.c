@@ -13,11 +13,16 @@
 
 #define MAX_HISTORY 64
 
+#define GRAYISH      CLITERAL(Color) {100,100,100,255}
+#define BEIGE        CLITERAL(Color) { 245, 245, 220, 255 }    
+
 typedef struct {
     double TotalTime;
     time_t TimeStarted;
     time_t TimeEnded;
 } TimeHistory;
+
+static Font Tahoma;
 
 // Why am i using snake case again?
 void draw_elapsed_time(double time, int8_t TimeText[], int32_t posX, int32_t posY);
@@ -25,6 +30,8 @@ void draw_history(TimeHistory TimeList[], uint32_t TimeCounted, RenderTexture2D 
 char* convert_time_from_seconds(double time);
 
 int main() {
+	SetConfigFlags(FLAG_VSYNC_HINT | FLAG_MSAA_4X_HINT | FLAG_WINDOW_HIGHDPI | FLAG_WINDOW_ALWAYS_RUN);
+
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Stopwatch");
 
     Rectangle StartButton = {
@@ -55,14 +62,19 @@ int main() {
         TIME_ZONE_HEIGHT,
     };
 
+    int HistoryBoxHeight = (SCREEN_HEIGHT / 2) - 30.0f;
+
     Rectangle HistoryBox = {
         20.0f,
         (float)SCREEN_HEIGHT / 2,
         (float)(SCREEN_WIDTH - 40.0f),
-        (float)- (SCREEN_HEIGHT / 2) - 20.0f,
+        (float)-HistoryBoxHeight,
     };
 
-    RenderTexture2D HistoryBoxTexture = LoadRenderTexture((SCREEN_WIDTH - 40), (SCREEN_HEIGHT / 2) - 20);
+    RenderTexture2D HistoryBoxTexture = LoadRenderTexture((SCREEN_WIDTH - 40), HistoryBoxHeight);
+
+    Tahoma = LoadFontEx("res/tahoma.ttf", 64, 0, 250);
+	SetTextureFilter(GetFontDefault().texture, TEXTURE_FILTER_BILINEAR);
 
     bool StopwatchStarted = false;
     bool HasStartedOnce = false;
@@ -145,10 +157,13 @@ int main() {
         }
 
         BeginDrawing();
-        ClearBackground(BLACK);
+        ClearBackground(BEIGE);
 
-        DrawRectangleRounded(TotalTimeBox, 0.1, 1, WHITE);
-        DrawRectangleRounded(CurrentTimeBox, 0.1, 1, WHITE);
+        DrawRectangleRounded(TotalTimeBox, 0.1f, 0, WHITE);
+        DrawRectangleRoundedLines(TotalTimeBox, 0.1f, 1, 1.0f, GRAYISH);
+
+        DrawRectangleRounded(CurrentTimeBox, 0.1f, 0, WHITE);
+        DrawRectangleRoundedLines(CurrentTimeBox, 0.1f, 1, 1.0f, GRAYISH);
         DrawTextureRec(
             HistoryBoxTexture.texture, 
             HistoryBox, 
@@ -159,8 +174,9 @@ int main() {
 			}, 
             WHITE
         );
+
+        draw_elapsed_time(TimeElapsed, "Lap Time: ", (int32_t)MARGIN + 60, (int32_t)MARGIN + 15);
         draw_elapsed_time(TotalTimeElapsed, "Total Time Elapsed: ", (int32_t)(SCREEN_WIDTH / 2) + MARGIN + 10, (int32_t)MARGIN + 15);
-        draw_elapsed_time(TimeElapsed, "Lap Time: ", (int32_t)MARGIN + 10, (int32_t)MARGIN + 15);
 
         if (StopwatchStarted) 
         {
@@ -170,6 +186,7 @@ int main() {
         {
             DrawRectangleRounded(StartButton, 0.1, 1, GREEN);
         }
+        DrawRectangleRoundedLines(StartButton, 0.1f, 1, 1.0f, GRAYISH);
 
         if (HasStartedOnce)
         {
@@ -179,8 +196,18 @@ int main() {
         {
             DrawRectangleRounded(ResetButton, 0.1, 1, GRAY);
         }
+        DrawRectangleRoundedLines(ResetButton, 0.1f, 1, 1.0f, GRAYISH);
 
-	    DrawText("TIME ELAPSED\t\t\t\t\t\t\t\tDATE STARTED\t\t\t\t\t\t\t\tDATE ENDED", 50, (SCREEN_HEIGHT / 2) + 10, 20, RED);
+	    DrawTextEx(Tahoma, 
+            "TIME \t\t\t\t\t\t\t\t\tDATE STARTED\t\t\t\t\t\t\t\t\t\t\t\t DATE ENDED", // Very cringe manual offsetting
+            (Vector2)
+			{
+				50, 
+				(SCREEN_HEIGHT / 2),
+			},
+            28, 
+            1,
+            BLACK);
         draw_history(AllTime, TimeCounted, HistoryBoxTexture);
         
         EndDrawing();
@@ -196,7 +223,17 @@ void draw_elapsed_time(double time, int8_t TimeText[], int32_t posX, int32_t pos
     char* TotalTime = convert_time_from_seconds(time); // a bit cringe that it calls another function
     char Formatted[32];
     snprintf(Formatted, sizeof(Formatted), "%s: %s \n", TimeText, TotalTime);
-	DrawText(Formatted, posX, posY, 20, RED);
+	DrawTextEx(
+        Tahoma, 
+        Formatted,
+        (Vector2)
+		{
+        posX, 
+        posY + 20, 
+		},
+        28, 
+        1,
+        BLACK);
 }
 
 void draw_history(TimeHistory TimeList[], uint32_t TimeCounted, RenderTexture2D target)
@@ -220,7 +257,17 @@ void draw_history(TimeHistory TimeList[], uint32_t TimeCounted, RenderTexture2D 
 
         char Formatted[128];
         snprintf(Formatted, sizeof(Formatted), "%s\t\t\t\t\t\t%s\t\t\t\t\t\t%s\n", TotalTimeFormatted, DateStarted, DateEnded);
-	    DrawText(Formatted, 50, 30 * i, 20, RED);
+	    DrawTextEx(
+            Tahoma,
+            Formatted,
+            (Vector2)
+			{
+				50, 
+				30 * i, 
+			},
+            28, 
+            1,
+            BLACK);
     }
     EndTextureMode();
 }
